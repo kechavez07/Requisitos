@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Especialistas</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .error-message {
+            color: red;
+            font-size: 0.9rem;
+            display: none;
+            margin-top: 5px;
+        }
+
+        /* Estilo para la vista previa del reporte */
+        .report-preview {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #ccc;
+            background-color: #f8f9fa;
+            display: none;
+        }
+
+        .report-preview h4 {
+            font-size: 20px;
+            font-weight: bold;
+        }
+        
+        .export-buttons {
+            margin-top: 20px;
+        }
+
+        #reportContent {
+    white-space: pre-line; /* Asegura que los saltos de línea y espacios se respeten */
+}
+
+    </style>
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Barra lateral -->
+            <nav class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse" style="position: fixed; top: 0; bottom: 0; left: 0; height: 100vh; padding-top: 20px; background-color: #f8f9fa;">
+                <div class="position-sticky">
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQRByXdlFL7j91LhNlOH684Rj3oPVBLUuGbJA&s" alt="Imagen de especialista" class="img-fluid">
+                    <ul class="nav flex-column">
+                        <br>
+                        <li class="nav-item mb-2" style="background-color: #e9ecef; border-radius: 5px;">
+                            <a class="nav-link active" href="admin.html" style="font-weight: bold; font-size: 18px; color: #495057;">
+                                Gestionar Especialistas
+                            </a>
+                        </li>
+                        <li class="nav-item mb-2" style="background-color: #e9ecef; border-radius: 5px;">
+                            <a class="nav-link active" href="especialidades.html" style="font-weight: bold; font-size: 18px; color: #495057;">
+                                Gestionar Especialidades
+                            </a>
+                        </li>
+                        <li class="nav-item mb-2" style="background-color: #f1f3f5; border-radius: 5px;">
+                            <a class="nav-link" href="#" style="font-weight: bold; font-size: 18px; color: #495057;">
+                                Importar Datos
+                            </a>
+                        </li>
+                        <br><br><br><br><br>
+                        <li class="nav-item mt-auto" style="background-color: #f8d7da; border-radius: 5px; text-align: center;">
+                            <a class="nav-link text-danger" href="../index.html" style="font-weight: bold; font-size: 18px; color: #721c24; display: inline-block;">
+                                Salir
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <!-- Contenido principal -->
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+                <h1 class="mt-4">Generar Reportes</h1>
+                <br>
+
+                <!-- Filtros -->
+                <div class="row mb-3">
+                    <div class="col-auto">
+                        <label for="reportFilter" class="form-label">Seleccionar Filtro</label>
+                        <select class="form-select" id="reportFilter">
+                            <option value="especialidad">Especialidad</option>
+                            <option value="especialista">Especialista</option>
+                            <option value="citasImpartidas">Citas Impartidas</option>
+                            <option value="citasNoImpartidas">Citas No Impartidas</option>
+                            <option value="valoresPagos">Valores a Pagar por Citas Impartidas</option>
+                        </select>
+                    </div>
+                    <div class="col-auto">
+                        <label for="dateRange" class="form-label">Seleccionar Rango de Fechas</label>
+                        <input type="date" class="form-control" id="startDate">
+                        <input type="date" class="form-control mt-2" id="endDate">
+                    </div>
+                    <div class="col-auto ms-auto">
+                        <button class="btn btn-primary mt-4" onclick="generateReport('registroPagos')">Reporte de Registro de Pagos</button>
+                        <button class="btn btn-secondary mt-4" onclick="generateReport('citasImpartidas')">Reporte de Citas Impartidas</button>
+                    </div>
+                </div>
+
+                <!-- Área de Vista Previa del Reporte -->
+                <div id="reportPreview" class="report-preview">
+                    <h4 id="reportTitle"></h4>
+                    <div id="reportContent"></div> <!-- Cambié de <p> a <div> -->
+                
+                    <!-- Botones de Exportación -->
+                    <div id="exportButtons" class="export-buttons" style="display: none;">
+                        <button class="btn btn-danger" onclick="generatePDF()">Exportar a PDF</button>
+                        <button class="btn btn-success" onclick="generateExcel()">Exportar a Excel</button>
+                    </div>
+                </div>
+                
+                
+            </main>
+        </div>
+    </div>
+
+    <script>
+        let currentReport = null;  // Variable global para almacenar el reporte
+
+        function generateReport(type) {
+            const filter = document.getElementById("reportFilter").value;
+            const startDate = document.getElementById("startDate").value;
+            const endDate = document.getElementById("endDate").value;
+
+            if (filter && startDate && endDate) {
+                const reportData = {
+                    filter: filter,
+                    startDate: startDate,
+                    endDate: endDate,
+                };
+
+                // Lógica para elegir el tipo de reporte
+                let report;
+                if (type === "registroPagos") {
+                    report = generatePaymentReport(reportData);
+                } else if (type === "citasImpartidas") {
+                    report = generateAppointmentReport(reportData);
+                }
+
+                // Mostrar el reporte en pantalla
+                document.getElementById("reportTitle").textContent = report.title;
+                document.getElementById("reportContent").textContent = report.content;
+                document.getElementById("reportPreview").style.display = "block";
+
+                // Mostrar los botones de exportación
+                document.getElementById("exportButtons").style.display = "block";
+
+                // Almacenar el reporte actual
+                currentReport = report;
+            } else {
+                alert("Por favor, completa todos los campos.");
+            }
+        }
+
+        function generatePaymentReport(data) {
+    return {
+        title: "Reporte de Registro de Pagos",
+        content: `
+            Total de pagos realizados: $100,000
+            Distribuidos por fechas: 2023-01-01 a 2023-12-31
+            Especialidad: Medicina General
+            Tipo de Terapia: Terapia Física
+            Pago total acumulado: $25,000
+        `,
+    };
+}
+
+
+
+        function generateAppointmentReport(data) {
+            return {
+                title: "Reporte de Citas Impartidas",
+                content: `
+                    Número total de citas impartidas: 500
+                    
+                    Estadísticas por especialidad:
+                          * Medicina General: 200 citas
+                          * Fisioterapia: 150 citas
+                          * Terapia Ocupacional: 150 citas
+                    
+                    Terapias más comunes:
+                           * Terapia Física: 220 citas
+                    
+                           Promedio de pacientes atendidos por día: 25
+                `,
+            };
+        }
+
+        function generatePDF() {
+            if (!currentReport) return;
+
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            doc.text(currentReport.title, 10, 10);
+            doc.text(currentReport.content, 10, 20);
+            doc.save(`${currentReport.title}.pdf`);
+        }
+
+        function generateExcel() {
+            if (!currentReport) return;
+
+            const workbook = XLSX.utils.book_new();
+            const worksheet = XLSX.utils.aoa_to_sheet([
+                [currentReport.title],
+                [currentReport.content],
+            ]);
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Reporte");
+            XLSX.writeFile(workbook, `${currentReport.title}.xlsx`);
+        }
+    </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+
+</body>
+
+</html>
+
+

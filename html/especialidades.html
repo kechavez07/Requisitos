@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Especialistas</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .error-message {
+            color: red;
+            font-size: 0.9rem;
+            display: none;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Barra lateral -->
+            <nav class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse" style="position: fixed; top: 0; bottom: 0; left: 0; height: 100vh; padding-top: 20px; background-color: #f8f9fa;">
+                <div class="position-sticky">
+                    <!-- Gestionar Especialistas -->
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQRByXdlFL7j91LhNlOH684Rj3oPVBLUuGbJA&s" alt="Imagen de especialista" class="img-fluid">
+
+                    <ul class="nav flex-column">
+                        <br>
+                        
+                        <li class="nav-item mb-2" style="background-color: #e9ecef; border-radius: 5px;">
+                            <a class="nav-link active" href="admin.html" style="font-weight: bold; font-size: 18px; color: #495057;">
+                                Gestionar Especialistas
+                            </a>
+                        </li>
+
+                        <li class="nav-item mb-2" style="background-color: #e9ecef; border-radius: 5px;">
+                            <a class="nav-link active" href="#" style="font-weight: bold; font-size: 18px; color: #495057;">
+                                Gestionar Especialidades
+                            </a>
+                        </li>
+                        
+                        <!-- Importar Datos -->
+                        <li class="nav-item mb-2" style="background-color: #f1f3f5; border-radius: 5px;">
+                            <a class="nav-link" href="reportes.html" style="font-weight: bold; font-size: 18px; color: #495057;">
+                                Importar Datos
+                            </a>
+                        </li>
+                        <!-- Salir (Abajo) -->
+                         <br>
+                         <br>
+                         <br>
+                         <br>
+                         <br>
+                         <li class="nav-item mt-auto" style="background-color: #f8d7da; border-radius: 5px; text-align: center;">
+                            <a class="nav-link text-danger" href="../index.html" style="font-weight: bold; font-size: 18px; color: #721c24; display: inline-block;">
+                                Salir
+                            </a>
+                        </li>
+                        
+                    </ul>
+                </div>
+            </nav>
+            
+            <!-- Modal para agregar o editar especialidad -->
+            <div class="modal fade" id="specialistModal" tabindex="-1" aria-labelledby="specialistModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="specialistModalLabel">Agregar/Editar Especialidad</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="specialistForm">
+                                <div class="mb-3">
+                                    <label for="specialtyName" class="form-label">Nombre de la Especialidad</label>
+                                    <input type="text" class="form-control" id="specialtyName" required>
+                                    <div id="specialtyError" class="error-message">El nombre solo puede contener letras y espacios.</div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="description" class="form-label">Descripción</label>
+                                    <input type="text" class="form-control" id="description" required>
+                                    <div id="descriptionError" class="error-message">La descripción solo puede contener letras y espacios.</div>
+                                </div>
+                                <button type="button" class="btn btn-primary" onclick="saveSpecialty()">Guardar</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contenido principal -->
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+                <h1 class="mt-4">Gestionar Especialidades</h1>
+                <br>
+                <div class="row mb-3">
+                    <div class="col-auto">
+                        <input type="text" class="form-control" id="searchInput" placeholder="Buscar Especialidades..." onkeyup="searchSpecialty()">
+                    </div>
+                    <div class="col-auto ms-auto">
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#specialistModal" onclick="clearForm()">Agregar Especialidad</button>
+                    </div>
+                </div>
+                <br>
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Nombre de la Especialidad</th>
+                                <th>Descripción</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="specialistTable">
+                            <!-- Datos dinámicos aquí -->
+                        </tbody>
+                    </table>
+                </div>
+            </main>
+        </div>
+    </div>
+    
+    <script>
+        // Función para buscar especialidades
+        function searchSpecialty() {
+            const input = document.getElementById('searchInput').value.toLowerCase();
+            const rows = document.querySelectorAll('#specialistTable tr');
+            rows.forEach(row => {
+                const cells = row.getElementsByTagName('td');
+                let found = false;
+                for (let i = 0; i < cells.length - 1; i++) {
+                    if (cells[i].innerText.toLowerCase().includes(input)) {
+                        found = true;
+                        break;
+                    }
+                }
+                if (found) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+
+        // Función para limpiar el formulario
+        function clearForm() {
+            document.getElementById("specialistForm").reset();
+        }
+  
+        let specialties = [
+            { name: "Medicina General", description: "Niños mayores de 10 años" },
+            { name: "Pediatría", description: "Especialista en niños" }
+        ];
+    
+        let editingIndex = null; // Variable global para almacenar el índice de edición
+    
+        window.onload = updateTable;
+    
+        // Validación de campos
+        document.getElementById("specialtyName").addEventListener("input", function () {
+            validateField(this, /^[a-zA-ZÑñáéíóúÁÉÍÓÚ\s]+$/, "specialtyError");
+        });
+
+        document.getElementById("description").addEventListener("input", function () {
+            validateField(this, /^[a-zA-ZÑñáéíóúÁÉÍÓÚ\s]+$/, "descriptionError");
+        });
+
+        function validateField(input, regex, errorId) {
+            const errorMessage = document.getElementById(errorId);
+            if (!regex.test(input.value)) {
+                errorMessage.style.display = "block";
+                return false;
+            } else {
+                errorMessage.style.display = "none";
+                return true;
+            }
+        }
+
+        function updateTable() {
+            const tableBody = document.getElementById('specialistTable');
+            tableBody.innerHTML = '';
+    
+            specialties.forEach((specialty, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${specialty.name}</td>
+                    <td>${specialty.description}</td>
+                    <td>
+                       
+                        <button class="btn btn-danger btn-sm" onclick="deleteSpecialty(${index})">Borrar</button>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+    
+        function saveSpecialty() {
+            const name = document.getElementById('specialtyName');
+            const description = document.getElementById('description');
+    
+            if (
+                !validateField(name, /^[a-zA-ZÑñ\s]+$/, "specialtyError") ||
+                !validateField(description, /^[a-zA-ZÑñ\s]+$/, "descriptionError")
+            ) {
+                return;
+            }
+    
+            if (editingIndex !== null) {
+                specialties[editingIndex] = { name: name.value, description: description.value };
+                editingIndex = null;
+            } else {
+                specialties.push({ name: name.value, description: description.value });
+            }
+    
+            updateTable();
+            clearForm();
+        }
+    
+        function editSpecialty(index) {
+            const specialty = specialties[index];
+            document.getElementById('specialtyName').value = specialty.name;
+            document.getElementById('description').value = specialty.description;
+            editingIndex = index;
+            document.getElementById('specialistModalLabel').innerText = 'Editar Especialidad';
+            $('#specialistModal').modal('show');
+        }
+    
+        function deleteSpecialty(index) {
+            if (confirm('¿Estás seguro de que quieres borrar esta especialidad?')) {
+                specialties.splice(index, 1);
+                updateTable();
+            }
+        }
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+</body>
+
+</html>

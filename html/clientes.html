@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agendar Cita Médica</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light d-flex align-items-center justify-content-center vh-100">
+    <div class="card shadow-lg p-4" style="width: 28rem; border-radius: 15px;">
+        <h2 class="text-center mb-4">Agendar Cita Médica</h2>
+        <form id="appointmentForm">
+            <div class="mb-3">
+                <label for="specialty" class="form-label">Especialidad</label>
+                <select id="specialty" class="form-select" required>
+                    <option value="">Seleccione una especialidad</option>
+                    <option value="Cardiología">Cardiología</option>
+                    <option value="Dermatología">Dermatología</option>
+                    <option value="Pediatría">Pediatría</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="date" class="form-label">Fecha y hora</label>
+                <input type="datetime-local" class="form-control" id="date" required>
+            </div>
+            <div class="mb-3">
+                <label for="representativeName" class="form-label">Nombre del representante</label>
+                <input type="text" class="form-control" id="representativeName" placeholder="Ingrese el nombre" required>
+            </div>
+            <div class="mb-3">
+                <label for="patientName" class="form-label">Nombre del paciente</label>
+                <input type="text" class="form-control" id="patientName" placeholder="Ingrese el nombre" required>
+            </div>
+            <div class="mb-3">
+                <label for="patientAge" class="form-label">Edad del paciente</label>
+                <input type="number" class="form-control" id="patientAge" placeholder="Ingrese la edad" required>
+            </div>
+            <div class="mb-3">
+                <label for="patientGender" class="form-label">Sexo del paciente</label>
+                <select id="patientGender" class="form-select" required>
+                    <option value="">Seleccione el sexo</option>
+                    <option value="Masculino">Masculino</option>
+                    <option value="Femenino">Femenino</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="disability" class="form-label">¿Tiene alguna discapacidad?</label>
+                <input type="text" class="form-control" id="disability" placeholder="Especifique o escriba 'Ninguna'" required>
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Agendar Cita</button>
+        </form>
+        
+        <!-- Confirmación y botones adicionales -->
+        <div id="confirmation" class="mt-3 text-center" style="display: none;">
+            <p>¿Desea confirmar esta cita o añadir una nueva?</p>
+            <button id="confirmButton" class="btn btn-success me-2">Confirmar</button>
+            <button id="addNewButton" class="btn btn-secondary">Añadir Nueva</button>
+        </div>
+
+        <!-- Botones de pago y regresar -->
+        <div id="paymentSection" class="mt-3 text-center" style="display: none;">
+            <button id="paymentButton" class="btn btn-success w-100">Realizar Pago</button>
+            <button id="backToClientButton" class="btn btn-primary w-100">Regresar a Clientes</button>
+        </div>
+
+        <!-- Botón para redirigir a citas.html -->
+        <div id="viewAppointmentsSection" class="mt-3 text-center" style="display: none;">
+            <button id="viewAppointmentsButton" class="btn btn-info w-100">Ver Citas Agendadas</button>
+        </div>
+
+        <div id="message" class="mt-3 text-center"></div>
+    </div>
+
+    <script>
+        // Array para almacenar las citas de la sesión actual
+        let sessionAppointments = [];
+
+        // Función para verificar si la fecha ya está ocupada (ahora con comparación precisa)
+        const isDateOccupied = (date) => {
+            // Iteramos sobre las citas existentes para verificar la fecha
+            for (let appointment of sessionAppointments) {
+                const existingDate = new Date(appointment.date);
+                if (existingDate.toISOString().slice(0, 16) === date.toISOString().slice(0, 16)) {
+                    return true; // Si hay coincidencia, la fecha está ocupada
+                }
+            }
+            return false; // Si no hay coincidencias, la fecha está libre
+        };
+
+        // Enviar las citas a WhatsApp (solo las citas recientes)
+        const sendWhatsApp = (appointments) => {
+            const formattedAppointments = appointments.map(a => 
+                `Especialidad: ${a.specialty}\n` +
+                `Fecha y hora: ${new Date(a.date).toLocaleString()}\n` +
+                `Representante: ${a.representativeName}\n` +
+                `Paciente: ${a.patientName}, Edad: ${a.patientAge}, Sexo: ${a.patientGender}\n` +
+                `Discapacidad: ${a.disability}\n`
+            ).join('\n');
+
+            const whatsappURL = `https://wa.me/?text=${encodeURIComponent(formattedAppointments)}`;
+            window.open(whatsappURL, '_blank');
+        };
+
+        // Manejar el formulario de cita
+        document.getElementById('appointmentForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const specialty = document.getElementById('specialty').value;
+            const date = new Date(document.getElementById('date').value);
+            const representativeName = document.getElementById('representativeName').value;
+            const patientName = document.getElementById('patientName').value;
+            const patientAge = parseInt(document.getElementById('patientAge').value);
+            const patientGender = document.getElementById('patientGender').value;
+            const disability = document.getElementById('disability').value;
+
+            const today = new Date();
+            if (date < today) {
+                document.getElementById('message').innerText = "Error: La fecha no puede ser anterior a la actual.";
+                document.getElementById('message').classList.add('text-danger');
+                return;
+            }
+
+            if (patientAge < 18 || patientAge > 100) {
+                document.getElementById('message').innerText = "Error: La edad debe estar entre 18 y 100 años.";
+                document.getElementById('message').classList.add('text-danger');
+                return;
+            }
+
+            // Verificar si la fecha está ocupada
+            if (isDateOccupied(date)) {
+                document.getElementById('message').innerText = "Error: La fecha y hora seleccionada ya está ocupada.";
+                document.getElementById('message').classList.add('text-danger');
+                return;
+            }
+
+            const appointmentData = {
+                specialty,
+                date: date.toISOString(),
+                representativeName,
+                patientName,
+                patientAge,
+                patientGender,
+                disability
+            };
+
+            // Agregar la cita a la sesión actual
+            sessionAppointments.push(appointmentData);
+
+            document.getElementById('confirmation').style.display = 'block';
+            document.getElementById('appointmentForm').style.display = 'none';
+
+            // Si hay citas, mostrar el botón para ver citas agendadas
+            if (sessionAppointments.length > 0) {
+                document.getElementById('viewAppointmentsSection').style.display = 'block';
+            }
+        });
+
+        // Confirmar cita y enviar solo las citas recientes por WhatsApp
+        document.getElementById('confirmButton').addEventListener('click', function () {
+            if (sessionAppointments.length > 0) {
+                sendWhatsApp(sessionAppointments);
+                document.getElementById('message').innerText = "Citas enviadas con éxito por WhatsApp.";
+                document.getElementById('message').classList.add('text-success');
+            }
+            document.getElementById('confirmation').style.display = 'none';
+            document.getElementById('paymentSection').style.display = 'block';  // Mostrar los botones de pago y regresar
+        });
+
+        // Añadir nueva cita
+        document.getElementById('addNewButton').addEventListener('click', function () {
+            document.getElementById('appointmentForm').reset();
+            document.getElementById('appointmentForm').style.display = 'block';
+            document.getElementById('confirmation').style.display = 'none';
+        });
+
+        // Redirigir a la página de pago
+        document.getElementById('paymentButton').addEventListener('click', function () {
+            window.location.href = "ConfirmarPago.html";
+        });
+
+        // Regresar a la página de clientes
+        document.getElementById('backToClientButton').addEventListener('click', function () {
+            window.location.href = "clientes.html";
+        });
+
+        // Ver citas agendadas
+        document.getElementById('viewAppointmentsButton').addEventListener('click', function () {
+            window.location.href = "citas.html";
+        });
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

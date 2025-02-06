@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recordatorio de Citas</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+    <div class="container mt-5">
+        <h2 class="text-center">Recordatorios de Citas</h2>
+        <div id="remindersList" class="mt-4">
+            <!-- Los recordatorios de citas se mostrarán aquí -->
+        </div>
+    </div>
+
+    <script>
+        const allAppointments = JSON.parse(localStorage.getItem('appointments')) || [];
+
+        const remindersListContainer = document.getElementById('remindersList');
+        const now = new Date();
+        const next24Hours = new Date(now.getTime() + (24 * 60 * 60 * 1000));
+
+        const upcomingAppointments = allAppointments.filter(appointment => {
+            const appointmentDate = new Date(appointment.date);
+            return appointmentDate > now && appointmentDate <= next24Hours && !appointment.recordatorioEnviado;
+        });
+
+        if (upcomingAppointments.length === 0) {
+            remindersListContainer.innerHTML = `<p class="text-center text-muted">No hay citas programadas en las próximas 24 horas.</p>`;
+        } else {
+            upcomingAppointments.forEach((appointment, index) => {
+                const reminderDiv = document.createElement('div');
+                reminderDiv.classList.add('card', 'mb-3');
+                reminderDiv.innerHTML = `
+                    <div class="card-body">
+                        <h5 class="card-title">Recordatorio: ${appointment.specialty}</h5>
+                        <p><strong>Fecha y Hora:</strong> ${new Date(appointment.date).toLocaleString()}</p>
+                        <p><strong>Paciente:</strong> ${appointment.patientName}</p>
+                        <p><strong>Enviado a:</strong> WhatsApp y Correo Electrónico</p>
+                        <button class="btn btn-primary" id="sendReminder${index}">Enviar Recordatorio</button>
+                    </div>
+                `;
+                remindersListContainer.appendChild(reminderDiv);
+
+                document.getElementById(`sendReminder${index}`).addEventListener('click', function () {
+                    alert(`Recordatorio enviado a ${appointment.patientName} por WhatsApp y Correo Electrónico.`);
+                    
+                    appointment.recordatorioEnviado = true;
+                    localStorage.setItem('appointments', JSON.stringify(allAppointments));
+                    
+                    this.disabled = true;
+                    this.textContent = "Recordatorio Enviado";
+                });
+            });
+        }
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
