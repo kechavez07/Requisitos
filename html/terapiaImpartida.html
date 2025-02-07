@@ -28,6 +28,21 @@
         .modal-header, .modal-footer {
             border: none;
         }
+        .time-slot-button {
+            width: 100%;
+            margin-bottom: 5px;
+        }
+        #timeSlotsContainer, #modifyTimeSlotsContainer, #deleteTimeSlotsContainer {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+        .assigned-schedule {
+            margin-top: 20px;
+        }
+        #confirmationMessage, #modifyConfirmationMessage, #deleteConfirmationMessage {
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
@@ -39,14 +54,15 @@
                     <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQRByXdlFL7j91LhNlOH684Rj3oPVBLUuGbJA&s" alt="Imagen de especialista" class="img-fluid">
                     <ul class="nav flex-column">
                         <br>
-                        <li class="nav-item mb-2" style="background-color: #e9ecef; border-radius: 5px;">
+                        <li class="nav-item mb-2" style="background-color: #f1f3f5; border-radius: 5px;">
                             <a class="nav-link active" href="medicos.html" style="font-weight: bold; font-size: 18px; color: #495057;">
-                                Registrar Terapia Impartida
+                                Asignar Horarios Disponibles
                             </a>
                         </li>
-                        <li class="nav-item mb-2" style="background-color: #f1f3f5; border-radius: 5px;">
+                        <li class="nav-item mb-2" style="background-color: #e9ecef; border-radius: 5px;">
                             <a class="nav-link" href="#" style="font-weight: bold; font-size: 18px; color: #495057;">
-                                Asignar Horarios Disponibles
+                                
+                                Registrar Terapia Impartida
                             </a>
                         </li>
                         <li class="nav-item mb-2" style="background-color: #f1f3f5; border-radius: 5px;">
@@ -159,6 +175,9 @@
             // Mostrar mensaje de confirmación
             const confirmationMessage = document.getElementById('confirmationMessage');
             confirmationMessage.style.display = 'block';
+            setTimeout(() => {
+                confirmationMessage.style.display = 'none';
+            }, 3000);
 
             console.log(`Estado de la cita de ${patientName}: Asistió`);
         });
@@ -181,6 +200,9 @@
             // Mostrar mensaje de confirmación
             const confirmationMessage = document.getElementById('confirmationMessage');
             confirmationMessage.style.display = 'block';
+            setTimeout(() => {
+                confirmationMessage.style.display = 'none';
+            }, 3000);
 
             console.log(`Estado de la cita de ${patientName}: No Asistió`);
         });
