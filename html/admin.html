@@ -34,7 +34,7 @@
                             </a>
                         </li>
 
-                        <li class="nav-item mb-2" style="background-color: #e9ecef; border-radius: 5px;">
+                        <li class="nav-item mb-2" style="background-color: #f1f3f5; border-radius: 5px;">
                             <a class="nav-link active" href="especialidades.html" style="font-weight: bold; font-size: 18px; color: #495057;">
                                 Gestionar Especialidades
                             </a>
@@ -43,7 +43,7 @@
                         <!-- Importar Datos -->
                         <li class="nav-item mb-2" style="background-color: #f1f3f5; border-radius: 5px;">
                             <a class="nav-link" href="reportes.html" style="font-weight: bold; font-size: 18px; color: #495057;">
-                                Importar Datos
+                                Generar Reportes
                             </a>
                         </li>
                         <!-- Salir (Abajo) -->
@@ -63,46 +63,46 @@
             </nav>
             
             <!-- Modal para agregar o editar especialista -->
-<div class="modal fade" id="specialistModal" tabindex="-1" aria-labelledby="specialistModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="specialistModalLabel">Agregar/Editar Especialista</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <div class="modal fade" id="specialistModal" tabindex="-1" aria-labelledby="specialistModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="specialistModalLabel">Agregar/Editar Especialista</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="specialistForm">
+                                <div class="mb-3">
+                                    <label for="name" class="form-label">Nombre Completo</label>
+                                    <input type="text" class="form-control" id="name" required>
+                                    <div id="nameError" class="error-message">El nombre solo puede contener letras y espacios.</div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="phone" class="form-label">Número de Teléfono</label>
+                                    <input type="text" class="form-control" id="phone" required>
+                                    <div id="phoneError" class="error-message">El número debe ser un teléfono móvil válido (09xxxxxxxx).</div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="email" class="form-label">Correo Electrónico</label>
+                                    <input type="email" class="form-control" id="email" required>
+                                    <div id="emailError" class="error-message">El correo electrónico no es válido.</div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="title" class="form-label">Título</label>
+                                    <input type="text" class="form-control" id="title" required>
+                                    <div id="titleError" class="error-message">El título solo puede contener letras y espacios.</div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="area" class="form-label">Área de Dominio</label>
+                                    <input type="text" class="form-control" id="area" required>
+                                    <div id="areaError" class="error-message">El área solo puede contener letras y espacios.</div>
+                                </div>
+                                <button type="button" class="btn btn-primary" onclick="saveSpecialist()">Guardar</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="modal-body">
-                <form id="specialistForm">
-                    <div class="mb-3">
-                        <label for="name" class="form-label">Nombre Completo</label>
-                        <input type="text" class="form-control" id="name" required>
-                        <div id="nameError" class="error-message">El nombre solo puede contener letras y espacios.</div>
-                    </div>
-                    <div class="mb-3">
-                        <label for="phone" class="form-label">Número de Teléfono</label>
-                        <input type="text" class="form-control" id="phone" required>
-                        <div id="phoneError" class="error-message">El número debe ser un teléfono móvil válido (09xxxxxxxx).</div>
-                    </div>
-                    <div class="mb-3">
-                        <label for="email" class="form-label">Correo Electrónico</label>
-                        <input type="email" class="form-control" id="email" required>
-                        <div id="emailError" class="error-message">El correo electrónico no es válido.</div>
-                    </div>
-                    <div class="mb-3">
-                        <label for="title" class="form-label">Título</label>
-                        <input type="text" class="form-control" id="title" required>
-                        <div id="titleError" class="error-message">El título solo puede contener letras y espacios.</div>
-                    </div>
-                    <div class="mb-3">
-                        <label for="area" class="form-label">Área de Dominio</label>
-                        <input type="text" class="form-control" id="area" required>
-                        <div id="areaError" class="error-message">El área solo puede contener letras y espacios.</div>
-                    </div>
-                    <button type="button" class="btn btn-primary" onclick="saveSpecialist()">Guardar</button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
 
             
 
