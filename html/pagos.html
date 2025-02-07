@@ -5,60 +5,80 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pago en Línea</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .payment-container {
+            background: #e0e0e0;
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 400px;
+            margin: auto;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+        .btn-pay {
+            background-color: #28a745;
+            color: white;
+        }
+    </style>
 </head>
 <body>
     <div class="container mt-5">
-        <h2 class="text-center">Realizar Pago en Línea</h2>
-        
-        <form id="paymentForm">
-            <div class="mb-3">
-                <label class="form-label">Seleccione su banco</label>
-                <select class="form-select" id="bankSelect" required>
-                    <option value="">Seleccione un banco...</option>
-                    <option value="Pichincha">Banco Pichincha</option>
-                    <option value="Guayaquil">Banco Guayaquil</option>
-                    <option value="Produbanco">Produbanco</option>
-                    <option value="Pacifico">Banco Pacífico</option>
-                    <option value="Loja">Banco Loja</option>
-                    <option value="Austro">Banco del Austro</option>
-                    <option value="Bolivariano">Banco Bolivariano</option>
-                    <option value="Internacional">Banco Internacional</option>
-                    <option value="Ruminahui">Banco Rumiñahui</option>
-                </select>
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label">Tipo de Tarjeta</label>
-                <select class="form-select" required>
-                    <option value="">Seleccione el tipo de tarjeta...</option>
-                    <option value="Credito">Crédito</option>
-                    <option value="Debito">Débito</option>
-                </select>
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label">Número de Tarjeta</label>
-                <input type="text" class="form-control" placeholder="1234 5678 9012 3456" required>
-            </div>
-
-            <div class="row">
-                <div class="col-md-6">
-                    <label class="form-label">Fecha de Caducidad</label>
-                    <input type="text" class="form-control" placeholder="MM/AA" required>
+        <div class="payment-container">
+            <form id="paymentForm">
+                <div class="mb-3">
+                    <label class="form-label">Tipo de tarjeta</label>
+                    <select class="form-select" required>
+                        <option value="Visa">Visa</option>
+                        <option value="Mastercard">Mastercard</option>
+                        <option value="Discover">Discover</option>
+                        <option value="Diners Club">Diners Club</option>
+                    </select>
                 </div>
-                <div class="col-md-6">
-                    <label class="form-label">Código de Seguridad</label>
-                    <input type="text" class="form-control" placeholder="123" required>
+
+                <div class="mb-3">
+                    <label class="form-label">Número de la tarjeta</label>
+                    <input type="text" class="form-control" placeholder="Número de la tarjeta" required>
                 </div>
-            </div>
 
-            <div class="mb-3 mt-3">
-                <label class="form-label">Nombre del Titular</label>
-                <input type="text" class="form-control" placeholder="Nombre completo" required>
-            </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <label class="form-label">Expira</label>
+                        <input type="text" class="form-control" placeholder="MM / YY" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">CVV</label>
+                        <input type="text" class="form-control" placeholder="CVV" required>
+                    </div>
+                </div>
 
-            <button type="submit" class="btn btn-primary w-100">Confirmar Pago</button>
-        </form>
+                <div class="mb-3 mt-3">
+                    <label class="form-label">Nombre (Igual que en la tarjeta)</label>
+                    <input type="text" class="form-control" placeholder="Nombre (Igual que en la tarjeta)" required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Diferidos</label>
+                    <select class="form-select">
+                        <option value="0">0</option>
+                        <option value="3">3 meses</option>
+                        <option value="6">6 meses</option>
+                        <option value="12">12 meses</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Tipo de crédito</label>
+                    <select class="form-select">
+                        <option value="Corriente">Corriente</option>
+                        <option value="Diferido">Diferido</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn btn-pay w-100">Pagar</button>
+            </form>
+        </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
