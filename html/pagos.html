@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pago en Línea</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <h2 class="text-center">Realizar Pago en Línea</h2>
+        
+        <form id="paymentForm">
+            <div class="mb-3">
+                <label class="form-label">Seleccione su banco</label>
+                <select class="form-select" id="bankSelect" required>
+                    <option value="">Seleccione un banco...</option>
+                    <option value="Pichincha">Banco Pichincha</option>
+                    <option value="Guayaquil">Banco Guayaquil</option>
+                    <option value="Produbanco">Produbanco</option>
+                    <option value="Pacifico">Banco Pacífico</option>
+                    <option value="Loja">Banco Loja</option>
+                    <option value="Austro">Banco del Austro</option>
+                    <option value="Bolivariano">Banco Bolivariano</option>
+                    <option value="Internacional">Banco Internacional</option>
+                    <option value="Ruminahui">Banco Rumiñahui</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Tipo de Tarjeta</label>
+                <select class="form-select" required>
+                    <option value="">Seleccione el tipo de tarjeta...</option>
+                    <option value="Credito">Crédito</option>
+                    <option value="Debito">Débito</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Número de Tarjeta</label>
+                <input type="text" class="form-control" placeholder="1234 5678 9012 3456" required>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <label class="form-label">Fecha de Caducidad</label>
+                    <input type="text" class="form-control" placeholder="MM/AA" required>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Código de Seguridad</label>
+                    <input type="text" class="form-control" placeholder="123" required>
+                </div>
+            </div>
+
+            <div class="mb-3 mt-3">
+                <label class="form-label">Nombre del Titular</label>
+                <input type="text" class="form-control" placeholder="Nombre completo" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100">Confirmar Pago</button>
+        </form>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.getElementById('paymentForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            alert('Pago realizado con éxito.');
+        });
+    </script>
+</body>
+</html>
